@@ -19,12 +19,12 @@ interface IButtonProps {
 
 export default function Button({
   type = "button",
-  disabled = true,
+  disabled = false,
   children,
   onClick,
   variant = variantEnum.light,
 }: IButtonProps) {
-  const baseStyle = "h-10 rounded-md p-2";
+  const baseStyle = "h-10 rounded-sm p-2";
   const variants = {
     primary: "bg-brand-primary bg-blue-400 text-white ",
     secondary: "bg-gray-300 text-black ",

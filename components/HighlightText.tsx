@@ -28,7 +28,7 @@ export function highlightText(txt: string) {
           return (
             <Link
               key={idx}
-              href={`/search?tag=${tag}`}
+              href={`/feed/search?tag=${tag}`}
               className="text-blue-400"
             >
               {part}

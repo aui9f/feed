@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { throttle } from "lodash";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 /** 여러번 클릭했을때를 대비 -- lodash
  *  특정 시간 동안 함수가 여러 번 호출되는 것을 제어하는 데 유용합니다.
@@ -30,6 +31,7 @@ export default function FeedActions({
   isFuncComments = true,
 }: FeedActionsProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [likes, setLikes] = useState(initLikes);
   const [retweets, setRetweets] = useState(initRetweets);
@@ -38,22 +40,53 @@ export default function FeedActions({
   const [isLiked, setIsLiked] = useState(isInitiallyLiked);
   const [isRetweeted, setIsRetweeted] = useState(isInitiallyRetweeted);
 
-  const handleLike = useCallback(
-    throttle(async () => {
-      const newLiked = !isLiked;
-      setIsLiked(newLiked);
-      const newLikeNum = Number(likes) + (newLiked ? 1 : -1);
-      setLikes((prev) => prev + (newLiked ? 1 : -1));
+  // 좋아요 뮤테이션 -- 아직 modal에서 변경이 실시간 변경이 안됨
+  const { mutate: handleLikeMutation } = useMutation({
+    mutationFn: async () => {
+      const newLikedStatus = !isLiked;
+      const newLikeCount = likes + (newLikedStatus ? 1 : -1);
+      // UI 낙관적 업데이트
+      setIsLiked(newLikedStatus);
+      setLikes(newLikeCount);
       try {
-        await toggleLike(postId, newLiked, newLikeNum);
+        await toggleLike(postId, newLikedStatus, newLikeCount);
+        return { newLikedStatus, newLikeCount }; // 성공 시 반환
       } catch (err) {
-        // 실패 시 롤백
+        // 서버 요청 실패 시 UI 상태 롤백
         setIsLiked(isLiked);
-        setLikes((prev) => prev + (isLiked ? 1 : -1));
+        setLikes(likes);
+        throw err; // 에러를 다시 throw하여 onError 콜백이 호출되도록 함
       }
-    }, 1000), // 1초에 한 번만 서버 호출
-    [isLiked, postId, toggleLike]
-  );
+    },
+    onSuccess: ({ newLikedStatus, newLikeCount }) => {
+      // 서버 요청 성공 시 캐시를 직접 업데이트하여 UI를 즉시 반영합니다.
+      // 쿼리 키가 ['getFeeds']로 시작하는 모든 쿼리에 대해 데이터를 업데이트합니다.
+
+      queryClient.setQueryData(["getFeeds", "0", "desc"], (oldData: any) => {
+        if (!oldData) return oldData;
+        // 모든 페이지를 순회하며 변경된 게시물의 좋아요 수를 업데이트합니다.
+
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: any) => ({
+            ...page,
+            feeds: page.feeds.map((feed: any) =>
+              Number(feed.id) === Number(postId)
+                ? {
+                    ...feed,
+                    isLiked: newLikedStatus,
+                    likes: newLikeCount,
+                  }
+                : feed
+            ),
+          })),
+        };
+      });
+    },
+    onError: (error) => {
+      console.error("좋아요 업데이트 실패:", error);
+    },
+  });
 
   const handleRetweet = useCallback(
     throttle(async () => {
@@ -84,7 +117,7 @@ export default function FeedActions({
     <div className="flex gap-4 py-2">
       <button
         type="button"
-        onClick={handleLike}
+        onClick={handleLikeMutation}
         className={`flex items-center gap-1 hover:opacity-80 ${
           isLiked ? "text-red-500" : "text-gray-400"
         }`}
@@ -120,7 +153,7 @@ export default function FeedActions({
         className="flex items-center gap-1 text-gray-400 hover:opacity-80"
       >
         <Image src="/images/comment.png" alt="댓글" width={24} height={24} />
-        <span className="text-sm">{comments}</span>
+        {comments > 0 && <span className="text-sm">{comments}</span>}
       </button>
     </div>
   );

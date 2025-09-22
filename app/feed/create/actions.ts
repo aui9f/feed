@@ -8,6 +8,12 @@ import { getUser } from "@/app/actions/getUser";
 
 export async function FeedForm(_: unknown, formData: FormData) {
   const user = await getUser();
+  if (!user) {
+    return {
+      statue: 401,
+      message: "로그인 사용자만 이용 가능합니다.",
+    };
+  }
 
   const inputData = {
     category: formData.get("category") as string,
@@ -44,7 +50,7 @@ export async function FeedForm(_: unknown, formData: FormData) {
   try {
     const result = await db.post.create({
       data: {
-        content: inputData.content.replace(/\n/gi, ""),
+        content: inputData.content, //.replace(/\n/gi, ""),
         userName: user.name,
         categoryId: Number(inputData.category),
         images: [...savedImages],

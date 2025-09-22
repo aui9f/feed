@@ -33,11 +33,9 @@ export default function Home() {
         ),
       initialPageParam: 0,
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-      // staleTime: 0, // 항상 fresh 상태로 간주 → 요청마다 refetch
-      // gcTime: 0, // 캐시 바로 제거
-      staleTime: 1000 * 60,
-      refetchOnWindowFocus: true, // 창에 다시 포커스 시 새로 요청
-      refetchOnReconnect: true, // 네트워크 재연결 시 새로 요청
+
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
     });
 
   const feeds = data?.pages.flatMap((page) => page.feeds) ?? [];
@@ -77,8 +75,8 @@ export default function Home() {
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
-    <section className="flex flex-col gap-4 w-full mx-auto sm:w-[470px]">
-      <div className="flex gap-4 justify-end">
+    <section className="flex flex-col  w-full mx-auto sm:w-[470px]">
+      <div className="flex gap-3 justify-end py-2 p-1">
         <SelectBox
           name="category"
           options={[...[{ id: "0", label: "전체" }], ...categoryOptions]}
@@ -87,7 +85,7 @@ export default function Home() {
           disabled={isLoading || isFetchingNextPage}
         />
 
-        <div className="flex gap-4">
+        <div className="flex gap-1">
           <Radio
             name="sort"
             options={sortOptions}
@@ -96,6 +94,21 @@ export default function Home() {
             disabled={isLoading || isFetchingNextPage}
           />
         </div>
+        <Link
+          href="/feed/create"
+          className="flex items-center sm:fixed right-14 bottom-14  text-blue-400 rounded-md cursor-pointer text-sm sm:block *:cursor-pointer
+          sm:p-2 sm:rounded-full sm:bg-blue-400 sm:text-white
+          "
+        >
+          <Image
+            src={"/images/plus.png"}
+            alt="피드작성"
+            width={18}
+            height={18}
+            className="m-auto hidden sm:block"
+          />
+          <p className="text-sm">글작성</p>
+        </Link>
       </div>
 
       <ul className="flex flex-col gap-4">
@@ -111,20 +124,6 @@ export default function Home() {
       </ul>
 
       <div ref={loadMoreRef} className="h-10"></div>
-
-      <Link
-        href="/feed/create"
-        className="hidden fixed right-14 bottom-14 bg-blue-400 text-white p-2 rounded-full cursor-pointer text-sm sm:block *:cursor-pointer"
-      >
-        <Image
-          src={"/images/plus.png"}
-          alt="피드작성"
-          width={18}
-          height={18}
-          className="m-auto"
-        />
-        <p>글작성</p>
-      </Link>
     </section>
   );
 }

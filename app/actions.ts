@@ -29,9 +29,9 @@ export async function getAllFeeds(
 ) {
   const pageSize = 10;
 
-  // // === 5초 지연 코드 추가 ===
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
-  // // =========================
+  // === 5초 지연 코드 추가 ===
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  // =========================
 
   const feeds = await db.post.findMany({
     where: category === 0 ? {} : { categoryId: category },
@@ -70,13 +70,16 @@ export async function getFeedsById(id: number) {
 }
 
 export async function toggleLike(id: number, isLiked: boolean, likes: number) {
-  return await db.post.update({
+  // === 5초 지연 코드 추가 ===
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  // =========================
+  await db.post.update({
     where: {
       id,
     },
     data: {
       isLiked,
-      likes,
+      likes: Number(likes),
     },
   });
 }

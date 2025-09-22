@@ -23,7 +23,7 @@ export default function Feed({
 }: FeedType) {
   return (
     <li className="w-full ">
-      <article className="flex flex-col  border border-gray-200 rounded-md shadow-md">
+      <article className="flex flex-col  border border-gray-200 rounded-sm shadow-md">
         <FeedHeader
           nickname={author.nickname}
           profileImage={author.profileImage}

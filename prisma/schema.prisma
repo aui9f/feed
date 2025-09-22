@@ -53,7 +53,7 @@ model commentList {
   content   String
   createdAt DateTime @default(now())
   likes     Int      @default(0)
-  isLiked   Boolean
+  isLiked   Boolean  @default(false)
   author    user     @relation(fields: [userName], references: [name])
   userName  String
   post      post     @relation(fields: [postId], references: [id])

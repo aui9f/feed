@@ -11,13 +11,13 @@ export default function Radio({
   return (
     <>
       {options.map((option) => (
-        <label key={option.id} className="flex items-center gap-2">
+        <label key={option.id} className="flex items-center gap-1">
           <div className="relative flex items-center cursor-pointer">
             <input
               name={name}
               type="radio"
               value={option.id}
-              className={`w-6 h-6 transition-all border rounded shadow appearance-none cursor-pointer peer hover:shadow-md border-sky-600 checked:bg-sky-600 checked:border-sky-600 disabled:bg-gray-200 disabled:border-gray-200`}
+              className={`w-4 h-4 transition-all border rounded shadow appearance-none cursor-pointer peer hover:shadow-md border-sky-600 checked:bg-sky-600 checked:border-sky-600 disabled:bg-gray-200 disabled:border-gray-200`}
               checked={selected === option.id}
               onChange={onChange}
               disabled={disabled}

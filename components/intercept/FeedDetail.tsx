@@ -1,33 +1,46 @@
 "use client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
-import { FeedType, getFeedsById } from "@/app/actions";
 import FeedHeader from "@/components/FeedHeader";
 import { formatDate } from "@/utils/formatDate";
 import PreviewImages from "@/components/PreviewImages";
 import { highlightText } from "@/components/HighlightText";
 import FeedActions from "@/components/FeedActions";
-import getComment from "@/app/[id]/actions";
-import { useFeedById } from "@/hooks/useFeed";
+import { getComment, setCommentForm } from "@/app/[id]/actions";
+
 import Loading from "@/components/Loading";
+import Comment from "@/components/Comment";
+import { useActionState, useEffect, useState } from "react";
+import Input from "@/components/forms/Input";
+import Button, { variantEnum } from "@/components/forms/Button";
+import { useFeedById } from "@/hooks/useFeed";
 
 export default function FeedDetail() {
+  const [state, formAction] = useActionState(setCommentForm, null);
   const { id } = useParams<{ id: string }>();
   const { data: feedData, isLoading: feedIsLoading } = useFeedById(id);
+  const [inputComment, setInputComment] = useState("");
 
   //commentList가져오기
-  const { data: commentData } = useQuery({
+  const { data: commentData, refetch } = useQuery({
     queryKey: ["getComment", id],
     queryFn: async () => getComment(Number(id)),
   });
 
-  if (feedIsLoading) return <Loading />;
+  // Place hooks before any early returns
+  useEffect(() => {
+    if (state?.statue === 200) {
+      setInputComment(""); //초기화
+      refetch();
+    }
+  }, [state]);
 
+  if (feedIsLoading) return <Loading />;
   if (!feedData) return <p>Not found</p>;
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-2 px-2 flex-col  sm:flex-row ">
       <div className="flex-2">
         <div className="relative w-full ">
           {feedData.images && Array.isArray(feedData.images) ? (
@@ -42,19 +55,21 @@ export default function FeedDetail() {
           )}
         </div>
       </div>
-      <div className="flex-1 flex flex-col gap-4">
+      <div className="flex-1 flex flex-col gap-4 sm:max-h-[640px] ">
         <FeedHeader
           nickname={feedData.author.nickname}
           profileImage={feedData.author.profileImage}
           createdAt={formatDate(new Date(feedData.createdAt))}
           category={feedData.category.name}
         />
-        <div className="flex-1">
-          <div>{highlightText(feedData.content)}</div>
-          <ul>
+        <div className="flex-1 flex flex-col sm:overflow-auto ">
+          <div className="flex-1 text-gray-600">
+            {highlightText(feedData.content)}
+          </div>
+          <ul className="flex-1 text-gray-600">
             {commentData &&
               commentData.map((comment) => (
-                <li key={comment.id}>[{comment.author.nickname}]</li>
+                <Comment key={comment.id} {...comment} />
               ))}
           </ul>
         </div>
@@ -63,14 +78,23 @@ export default function FeedDetail() {
             postId={feedData.id}
             initLikes={feedData.likes}
             initRetweets={feedData.retweets}
-            initComments={feedData.commentList.length}
+            initComments={0}
             isInitiallyLiked={feedData.isLiked}
             isInitiallyRetweeted={feedData.isRetweeted}
             isFuncComments={false}
           />
-          <div>
-            <input />
-          </div>
+          <form action={formAction} className="flex gap-1 py-2">
+            <input type="hidden" name="postId" value={id} />
+            <Input
+              name="comment"
+              value={inputComment}
+              onChange={(e) => setInputComment(e.target.value)}
+              className="flex-1"
+            />
+            <Button type="submit" variant={variantEnum.dark}>
+              게시
+            </Button>
+          </form>
         </div>
       </div>
     </div>
