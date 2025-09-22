@@ -1,24 +1,22 @@
 ## ⚙️ 실행방법
 
-#### 소스파일 실행하기 전까지
-
-# 1. 레포지토리 클론
+#### 1. 레포지토리 클론
 
 git clone https://github.com/aui9f/feed.git
 
-# 2. 클론한 디렉토리로 이동
+#### 2. 클론한 디렉토리로 이동
 
 cd feed
 
-# 3. 원격 브랜치 확인 (선택 사항)
+#### 3. 원격 브랜치 확인 (선택 사항)
 
 git branch -r
 
-# 4. master 브랜치 체크아웃
+#### 4. master 브랜치 체크아웃
 
 git checkout master
 
-# 5. 최신 커밋 가져오기
+#### 5. 최신 커밋 가져오기
 
 git pull origin master
 
@@ -51,7 +49,7 @@ DATABASE_URL="file:./prisma/database.db"
 rm prisma/database.db
 # Prisma 마이그레이션 적용, --name 뒤는 마이그레이션 이름으로 자유롭게 지정 가능
 npx prisma migrate deploy
-npx prisma migrate dev
+npx prisma migrate dev --name init
 ```
 
 ##### 시드 데이터 입력
@@ -175,6 +173,10 @@ npx prisma db seed
   ⚠️️ 이미지 lazy loading -- Nextjs에서는 next/image의 <Image/>컴포넌트를 사용 → <Image /> 태그 형식으로 정리
 
 ## 📅 개발 진행 기록
+
+### 개발환경
+
+맥북
 
 ### Day 1
 
