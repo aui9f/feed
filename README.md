@@ -58,6 +58,18 @@ npx prisma migrate dev --name init
 npx prisma db seed
 ```
 
+#### 개발 서버 실행
+
+```bash
+npm run dev
+# 또는
+yarn dev
+# 또는
+pnpm dev
+```
+
+브라우저에서 [http://localhost:3000] 으로 접속해 결과를 확인할 수 있습니다.
+
 ## 🖥️ 사용한 기술 스택 및 선택 이유
 
 1. NextJS

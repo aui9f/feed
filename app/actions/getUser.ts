@@ -23,18 +23,22 @@ export async function getUser() {
     id = isUser?.id;
   }
 
-  // 2. 없으면 저장
-  if (!isUser) {
-    const user = await db.user.create({
-      data: {
-        name: currentUser.name,
-        nickname: currentUser.nickname,
-        profileImage: currentUser.profileImage,
-        verified: currentUser.verified,
-      },
-      select: { id: true },
-    });
-    id = user.id;
+  try {
+    // 2. 없으면 저장
+    if (!isUser) {
+      const user = await db.user.create({
+        data: {
+          name: currentUser.name,
+          nickname: currentUser.nickname,
+          profileImage: currentUser.profileImage,
+          verified: currentUser.verified,
+        },
+        select: { id: true },
+      });
+      id = user.id;
+    }
+  } catch (error) {
+    console.log("getUser: ", error);
   }
 
   // 로그인 유저 정보 가져오기
