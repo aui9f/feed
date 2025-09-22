@@ -36,7 +36,7 @@ CREATE TABLE "commentList" (
     "content" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "likes" INTEGER NOT NULL DEFAULT 0,
-    "isLiked" BOOLEAN NOT NULL,
+    "isLiked" BOOLEAN NOT NULL DEFAULT false,
     "userName" TEXT NOT NULL,
     "postId" INTEGER NOT NULL,
     CONSTRAINT "commentList_userName_fkey" FOREIGN KEY ("userName") REFERENCES "user" ("name") ON DELETE RESTRICT ON UPDATE CASCADE,
