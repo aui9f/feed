@@ -9,26 +9,12 @@ import PreviewImages from "@/components/PreviewImages";
 import { highlightText } from "@/components/HighlightText";
 import FeedActions from "@/components/FeedActions";
 import getComment from "@/app/[id]/actions";
+import { useFeedById } from "@/hooks/useFeed";
+import Loading from "@/components/Loading";
 
 export default function FeedDetail() {
   const { id } = useParams<{ id: string }>();
-
-  // 1. 캐시에서 데이터 가져오기
-  const queryClient = useQueryClient();
-  const cachedData = queryClient.getQueryData(["getFeeds"]) as
-    | { pages: { feeds: FeedType[] }[] }
-    | undefined;
-  const cachedFeed = cachedData?.pages?.flatMap((page) => page.feeds) ?? [];
-
-  const feedFromCache = cachedFeed.find((r: FeedType) => r.id === Number(id));
-  // 2. 캐시에 없으면 API 호출
-  const { data, isLoading } = useQuery({
-    queryKey: ["getFeedsId", id],
-    queryFn: async () => getFeedsById(Number(id)),
-    enabled: !feedFromCache, // 캐시에 데이터가 있으면 API 호출을 하지 않음
-  });
-
-  const feed = feedFromCache || data || null;
+  const { data: feedData, isLoading: feedIsLoading } = useFeedById(id);
 
   //commentList가져오기
   const { data: commentData } = useQuery({
@@ -36,18 +22,19 @@ export default function FeedDetail() {
     queryFn: async () => getComment(Number(id)),
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!feed) return <p>Not found</p>;
+  if (feedIsLoading) return <Loading />;
+
+  if (!feedData) return <p>Not found</p>;
 
   return (
     <div className="flex gap-4">
       <div className="flex-2">
         <div className="relative w-full ">
-          {feed.images && Array.isArray(feed.images) ? (
+          {feedData.images && Array.isArray(feedData.images) ? (
             <div className="relative w-full ">
               <PreviewImages
                 isSquare={false}
-                images={feed.images as string[]}
+                images={feedData.images as string[]}
               />
             </div>
           ) : (
@@ -57,13 +44,13 @@ export default function FeedDetail() {
       </div>
       <div className="flex-1 flex flex-col gap-4">
         <FeedHeader
-          nickname={feed.author.nickname}
-          profileImage={feed.author.profileImage}
-          createdAt={formatDate(new Date(feed.createdAt))}
-          category={feed.category.name}
+          nickname={feedData.author.nickname}
+          profileImage={feedData.author.profileImage}
+          createdAt={formatDate(new Date(feedData.createdAt))}
+          category={feedData.category.name}
         />
         <div className="flex-1">
-          <div>{highlightText(feed.content)}</div>
+          <div>{highlightText(feedData.content)}</div>
           <ul>
             {commentData &&
               commentData.map((comment) => (
@@ -73,12 +60,12 @@ export default function FeedDetail() {
         </div>
         <div>
           <FeedActions
-            postId={feed.id}
-            initLikes={feed.likes}
-            initRetweets={feed.retweets}
-            initComments={feed.commentList.length}
-            isInitiallyLiked={feed.isLiked}
-            isInitiallyRetweeted={feed.isRetweeted}
+            postId={feedData.id}
+            initLikes={feedData.likes}
+            initRetweets={feedData.retweets}
+            initComments={feedData.commentList.length}
+            isInitiallyLiked={feedData.isLiked}
+            isInitiallyRetweeted={feedData.isRetweeted}
             isFuncComments={false}
           />
           <div>

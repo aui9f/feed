@@ -6,6 +6,7 @@ import FeedHeader from "@/components/FeedHeader";
 import { highlightText } from "@/components/HighlightText";
 import PreviewImages from "@/components/PreviewImages";
 import { formatDate } from "@/utils/formatDate";
+import Link from "next/link";
 
 export default function Feed({
   id,
@@ -29,15 +30,17 @@ export default function Feed({
           createdAt={formatDate(new Date(createdAt))}
           category={category.name}
         />
-        <div className="relative w-full aspect-square">
-          {images && Array.isArray(images) ? (
-            <div className="relative w-full aspect-square">
-              <PreviewImages images={images as string[]} />
-            </div>
-          ) : (
-            <div className="bg-gray-400 w-full aspect-square"></div>
-          )}
-        </div>
+        <Link href={`/${id}`}>
+          <div className="relative w-full aspect-square">
+            {images && Array.isArray(images) ? (
+              <div className="relative w-full aspect-square">
+                <PreviewImages images={images as string[]} />
+              </div>
+            ) : (
+              <div className="bg-gray-400 w-full aspect-square"></div>
+            )}
+          </div>
+        </Link>
         <figure className="px-2 pb-2 my-2">
           <FeedActions
             postId={id}

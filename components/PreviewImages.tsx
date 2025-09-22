@@ -91,7 +91,8 @@ export default function PreviewImages({
             {images.map((file, i) => (
               <div
                 key={i}
-                className={`relative flex-shrink-0 w-full aspect-square`}
+                className="relative flex-shrink-0 w-full max-h-[640px] aspect-square overflow-hidden"
+                style={{ height: "100%" }} // 부모 높이에 맞춤
               >
                 <Image
                   src={
@@ -99,7 +100,10 @@ export default function PreviewImages({
                   }
                   alt="preview"
                   fill={true}
-                  className={`${isSquare ? "object-cover" : "object-contain"}`}
+                  className={`${
+                    isSquare ? "object-cover" : "object-contain"
+                  } max-h-full`}
+                  style={{ maxHeight: "100%" }} // 부모 높이 제한
                 />
 
                 {onRemove && (

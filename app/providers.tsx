@@ -8,6 +8,8 @@ import { useUserStore } from "@/store/userStore";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useModalStore } from "@/store/modalStore";
 
 export default function Providers({
   initialUser,
@@ -16,9 +18,11 @@ export default function Providers({
   initialUser: UserType | null;
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   const [queryClient] = useState(() => new QueryClient());
   const { setUser } = useUserStore();
   const { isLoading } = useLoadingStore();
+  const { isModal } = useModalStore();
 
   useEffect(() => {
     if (initialUser) {
@@ -28,9 +32,11 @@ export default function Providers({
 
   return (
     <QueryClientProvider client={queryClient}>
-      {isLoading && <Loading />}
-      {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      <div className={`${isModal ? "overflow-hidden h-screen" : ""}`}>
+        {isLoading && <Loading />}
+        {children}
+        <ReactQueryDevtools initialIsOpen={false} />
+      </div>
     </QueryClientProvider>
   );
 }
