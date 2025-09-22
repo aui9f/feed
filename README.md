@@ -39,7 +39,7 @@ pnpm install
 프로젝트 루트에 `.env` 파일 생성 후 아래 내용 입력:
 
 ```bash
-DATABASE_URL="file:./prisma/database.db"
+DATABASE_URL="file:./database.db"
 ```
 
 ##### 기존 SQLite DB 파일 삭제 후 Prisma 마이그레이션 적용
