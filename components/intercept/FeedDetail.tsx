@@ -18,14 +18,12 @@ export default function FeedDetail() {
   const cachedData = queryClient.getQueryData(["getFeeds"]) as
     | { pages: { feeds: FeedType[] }[] }
     | undefined;
-  const cachedRecipes = cachedData?.pages?.flatMap((page) => page.feeds) ?? [];
+  const cachedFeed = cachedData?.pages?.flatMap((page) => page.feeds) ?? [];
 
-  const feedFromCache = cachedRecipes.find(
-    (r: FeedType) => r.id === Number(id)
-  );
+  const feedFromCache = cachedFeed.find((r: FeedType) => r.id === Number(id));
   // 2. 캐시에 없으면 API 호출
   const { data, isLoading } = useQuery({
-    queryKey: ["recipe", id],
+    queryKey: ["getFeedsId", id],
     queryFn: async () => getFeedsById(Number(id)),
     enabled: !feedFromCache, // 캐시에 데이터가 있으면 API 호출을 하지 않음
   });
@@ -45,11 +43,11 @@ export default function FeedDetail() {
     <div className="flex gap-4">
       <div className="flex-2">
         <div className="relative w-full ">
-          {feed.images.length > 0 && feed.images[0] ? (
+          {feed.images && Array.isArray(feed.images) ? (
             <div className="relative w-full ">
               <PreviewImages
                 isSquare={false}
-                images={feed.images.map((img) => img.url)}
+                images={feed.images as string[]}
               />
             </div>
           ) : (
@@ -85,7 +83,6 @@ export default function FeedDetail() {
           />
           <div>
             <input />
-            <button>게시</button>
           </div>
         </div>
       </div>

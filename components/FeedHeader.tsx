@@ -3,8 +3,8 @@ import Image from "next/image";
 interface FeedHeaderProps {
   nickname: string;
   profileImage: string;
-  createdAt: string;
-  category: string;
+  createdAt?: string;
+  category?: string;
 }
 
 export default function FeedHeader({
@@ -29,12 +29,16 @@ export default function FeedHeader({
 
       <p className="flex-1">
         {nickname} <span className="ml-1 mr-2 text-gray-200">•</span>
-        <span className="text-gray-400 text-sm">{createdAt}</span>
+        {createdAt && (
+          <span className="text-gray-400 text-sm">{createdAt}</span>
+        )}
       </p>
 
-      <p className="bg-gray-200 text-sm py-1 px-2 rounded-md text-gray-500">
-        {category}
-      </p>
+      {category && (
+        <p className="bg-gray-200 text-sm py-1 px-2 rounded-md text-gray-500">
+          {category}
+        </p>
+      )}
     </header>
   );
 }

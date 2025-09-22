@@ -101,6 +101,7 @@ export default function PreviewImages({
                   fill={true}
                   className={`${isSquare ? "object-cover" : "object-contain"}`}
                 />
+
                 {onRemove && (
                   <button
                     type="button"
@@ -121,7 +122,7 @@ export default function PreviewImages({
               height={24}
               alt="왼쪽이동버튼"
               onClick={goToPrevSlide}
-              className="hidden md:block absolute left-2 top-1/2 transform -translate-y-1/2 z-20"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 z-20"
             />
           )}
 
@@ -132,7 +133,7 @@ export default function PreviewImages({
               height={24}
               alt="왼쪽이동버튼"
               onClick={goToNextSlide}
-              className="hidden md:block absolute right-2 top-1/2 transform -translate-y-1/2 z-20"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 z-20"
             />
           )}
         </>

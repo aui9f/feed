@@ -74,12 +74,8 @@ async function main() {
         isRetweeted: post.isRetweeted ?? false,
         hasMoreComments: post.hasMoreComments ?? false,
         createdAt: post.createdAt ? new Date(post.createdAt) : undefined,
-        images:
-          post.images && post.images.length > 0
-            ? {
-                create: post.images.map((img) => ({ url: img })),
-              }
-            : undefined,
+        images: post.images ?? [],
+
         commentList: {
           create:
             post.commentList?.map((c) => ({

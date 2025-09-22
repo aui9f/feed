@@ -30,7 +30,7 @@ model post {
   createdAt       DateTime      @default(now())
   likes           Int           @default(0)
   retweets        Int           @default(0)
-  images          postImage[]
+  images          Json
   commentList     commentList[]
   isLiked         Boolean       @default(false)
   isRetweeted     Boolean       @default(false)
@@ -41,12 +41,12 @@ model post {
   categoryId      Int
 }
 
-model postImage {
-  id     String @id @default(uuid())
-  postId Int
-  post   post   @relation(fields: [postId], references: [id])
-  url    String
-}
+// model postImage {
+//   id     String @id @default(uuid())
+//   postId Int
+//   post   post   @relation(fields: [postId], references: [id])
+//   url    String
+// }
 
 model commentList {
   id        Int      @id @default(autoincrement())

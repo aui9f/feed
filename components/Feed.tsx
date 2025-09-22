@@ -6,7 +6,6 @@ import FeedHeader from "@/components/FeedHeader";
 import { highlightText } from "@/components/HighlightText";
 import PreviewImages from "@/components/PreviewImages";
 import { formatDate } from "@/utils/formatDate";
-import Image from "next/image";
 
 export default function Feed({
   id,
@@ -31,9 +30,9 @@ export default function Feed({
           category={category.name}
         />
         <div className="relative w-full aspect-square">
-          {images.length > 0 && images[0] ? (
+          {images && Array.isArray(images) ? (
             <div className="relative w-full aspect-square">
-              <PreviewImages images={images.map((img) => img.url)} />
+              <PreviewImages images={images as string[]} />
             </div>
           ) : (
             <div className="bg-gray-400 w-full aspect-square"></div>

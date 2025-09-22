@@ -7,6 +7,9 @@ export type FeedType = Prisma.postGetPayload<{
   include: { author: true; images: true; category: true; commentList: true };
 }>;
 
+export type CategoryType = Prisma.categoryGetPayload<Record<string, never>>;
+// 관련된 데이터를 포함하지 않는다.
+
 export async function getCategory() {
   try {
     // === 5초 지연 코드 추가 ===
@@ -36,7 +39,6 @@ export async function getAllFeeds(
     take: pageSize + 1, // 다음 페이지 여부 확인을 위해 +1
     ...(cursor && { skip: 1, cursor: { id: cursor } }),
     include: {
-      images: true,
       commentList: true,
       category: true,
       author: true,
@@ -57,7 +59,6 @@ export async function getFeedsById(id: number) {
     return await db.post.findUnique({
       where: { id },
       include: {
-        images: true,
         commentList: true,
         category: true,
         author: true,

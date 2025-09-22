@@ -1,11 +1,13 @@
 "use client";
-import { getAllFeeds, getCategory } from "@/app/actions";
+import { CategoryType, getAllFeeds, getCategory } from "@/app/actions";
 import Feed from "@/components/Feed";
 import FeedSkeleton from "@/components/FeedSkeleton";
 import Radio from "@/components/forms/Radio";
 import SelectBox from "@/components/forms/SelectBox";
 import { FormOption } from "@/types/ui";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
@@ -13,7 +15,7 @@ export default function Home() {
   const [selectedSort, setSelectedSort] = useState<"asc" | "desc">("desc");
 
   // 1. 카테고리 -- 1시간 동안 캐시 유지
-  const { data: categoryData } = useQuery({
+  const { data: categoryData } = useQuery<CategoryType[]>({
     queryKey: ["getCategory"],
     queryFn: () => getCategory(),
     staleTime: 1000 * 60 * 60,
@@ -109,6 +111,20 @@ export default function Home() {
       </ul>
 
       <div ref={loadMoreRef} className="h-10"></div>
+
+      <Link
+        href="/feed/create"
+        className="hidden fixed right-14 bottom-14 bg-blue-400 text-white p-2 rounded-full cursor-pointer text-sm sm:block *:cursor-pointer"
+      >
+        <Image
+          src={"/images/plus.png"}
+          alt="피드작성"
+          width={18}
+          height={18}
+          className="m-auto"
+        />
+        <p>글작성</p>
+      </Link>
     </section>
   );
 }

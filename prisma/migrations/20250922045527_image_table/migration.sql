@@ -20,6 +20,7 @@ CREATE TABLE "post" (
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "likes" INTEGER NOT NULL DEFAULT 0,
     "retweets" INTEGER NOT NULL DEFAULT 0,
+    "images" JSONB NOT NULL,
     "isLiked" BOOLEAN NOT NULL DEFAULT false,
     "isRetweeted" BOOLEAN NOT NULL DEFAULT false,
     "hasMoreComments" BOOLEAN NOT NULL DEFAULT false,
@@ -27,14 +28,6 @@ CREATE TABLE "post" (
     "categoryId" INTEGER NOT NULL,
     CONSTRAINT "post_userName_fkey" FOREIGN KEY ("userName") REFERENCES "user" ("name") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "post_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "category" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "postImage" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "postId" INTEGER NOT NULL,
-    "url" TEXT NOT NULL,
-    CONSTRAINT "postImage_postId_fkey" FOREIGN KEY ("postId") REFERENCES "post" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
