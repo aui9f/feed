@@ -48,8 +48,8 @@ DATABASE_URL="file:./database.db"
 # 삭제
 rm prisma/database.db
 # Prisma 마이그레이션 적용, --name 뒤는 마이그레이션 이름으로 자유롭게 지정 가능
-npx prisma migrate deploy
 npx prisma migrate dev --name init
+npx prisma migrate deploy
 ```
 
 ##### 시드 데이터 입력
@@ -196,7 +196,7 @@ pnpm dev
 
 - category, post 관계에 맞춰 데이터 구조 조정
 
-  -- mockPosts의 images와 commentList를 별도 테이블로 분리
+  -- mockPosts의 User/commentList를 별도 테이블로 분리
 
   -- Post와 Comment에 작성된 유저 정보를 추출하여 User 테이블 생성
 

@@ -26,8 +26,10 @@ export async function getUser() {
   try {
     // 2. 없으면 저장
     if (!isUser) {
-      const user = await db.user.create({
-        data: {
+      const user = await db.user.upsert({
+        where: { name: currentUser.name },
+        update: {},
+        create: {
           name: currentUser.name,
           nickname: currentUser.nickname,
           profileImage: currentUser.profileImage,
